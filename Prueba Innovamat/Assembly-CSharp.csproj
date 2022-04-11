@@ -60,6 +60,7 @@
     <Compile Include="Assets\Scripts\LevelController.cs" />
     <Compile Include="Assets\Scripts\NumberGenerator.cs" />
     <Compile Include="Assets\Scripts\ScoreControl.cs" />
+    <Compile Include="Assets\Scripts\Singleton.cs" />
     <Compile Include="Assets\Scripts\TextControl.cs" />
   </ItemGroup>
   <ItemGroup>

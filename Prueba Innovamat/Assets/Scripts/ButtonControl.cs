@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Controla el comportamiento de los botones
+/// </summary>
 public class ButtonControl : MonoBehaviour
 {
-    public delegate void PushButton();
-    public event PushButton OnClickButton;
-
+    [Header("Componentes")]
     [SerializeField] Text buttonText;
 
     private int numberInButton;
@@ -17,6 +18,8 @@ public class ButtonControl : MonoBehaviour
     private Animator animator;
     private Button button;
 
+    public delegate void PushButton();
+    public event PushButton OnClickButton;
 
     public int NumberInButton { get => numberInButton; set => numberInButton = value; }
     public bool CorrectAnswer { get => correctAnswer; set => correctAnswer = value; }
@@ -35,12 +38,18 @@ public class ButtonControl : MonoBehaviour
         buttonText.text = NumberInButton.ToString();
     }
 
+    /// <summary>
+    /// Habilita la animacion de entrada de los botones
+    /// </summary>
     public void ButtonInto() 
     {
         animator.SetBool("ButtonInto", true);
     }
 
-
+    /// <summary>
+    /// Acción a realizar cuando se pulsa un botón, se simula el click cuando se quiere imitar el comportamiento sin afectar a la puntuación
+    /// </summary>
+    /// <param name="clickSimulate"></param>
     public void ClickButton(bool clickSimulate) 
     {
         button.interactable = false;
@@ -63,6 +72,9 @@ public class ButtonControl : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Restituye los valores iniciales del botón para iniciar un nuevo nivel
+    /// </summary>
     public void ResetParameters()
     {
         gameObject.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
@@ -72,17 +84,5 @@ public class ButtonControl : MonoBehaviour
         animator.SetBool("ButtonInto", false);
 
         buttonPressed = false;
-    }
-
-    public void ResolveLevel() 
-    {
-        if (correctAnswer)
-        {
-            animator.SetBool("CorrectButton", true);
-        }
-        else
-        {
-            animator.SetBool("ErrorButton", true);
-        }
     }
 }

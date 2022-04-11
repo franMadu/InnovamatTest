@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TextControl : MonoBehaviour
+/// <summary>
+/// Controla el comportamiento del texto
+/// </summary>
+public class TextControl : Singleton<TextControl>
 {
-    private Text numberText;
-    private Animator animator;
+    [Header("Componentes")]
+    [SerializeField] Text numberText;
+    [SerializeField] Animator animator;
 
     private string numberTextString;
 
@@ -15,17 +19,14 @@ public class TextControl : MonoBehaviour
 
     public string NumberTextString { get => numberTextString; set => numberTextString = value; }
 
-    public void Awake()
-    {
-        animator = GetComponent<Animator>();
-        numberText = GetComponent<Text>();
-    }
-
     public void Update()
     {
         numberText.text = numberTextString;
     }
 
+    /// <summary>
+    /// Animacion de faceIn del texto
+    /// </summary>
     public void FaceInText() 
     {
         animator.SetBool("NumberTextOut", false);
@@ -34,6 +35,9 @@ public class TextControl : MonoBehaviour
         Invoke("FaceOutText", 4.0f);
     }
 
+    /// <summary>
+    /// Animacion de faceOut del texto
+    /// </summary>
     public void FaceOutText()
     {
         animator.SetBool("NumberTextInto", false);
@@ -42,6 +46,9 @@ public class TextControl : MonoBehaviour
         Invoke("SpawningButtonCalling", 2.0f);
     }
 
+    /// <summary>
+    /// Lanza el evento para que se muestren los botones
+    /// </summary>
     public void SpawningButtonCalling() 
     {
         SpawningButton();

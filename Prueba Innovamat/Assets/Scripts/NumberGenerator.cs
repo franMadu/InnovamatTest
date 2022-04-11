@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// Clase que genera numeros aleatorios y los convierte a texto.
 /// </summary>
-public class NumberGenerator : MonoBehaviour
+public class NumberGenerator : Singleton<NumberGenerator>
 {
     [SerializeField] int minRandomValue = 0;
     [SerializeField] int maxRandomValue = int.MaxValue;

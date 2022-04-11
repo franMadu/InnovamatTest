@@ -3,16 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LevelController : MonoBehaviour
+/// <summary>
+/// Controla el comportamiento del nivel
+/// </summary>
+public class LevelController : Singleton<LevelController>
 {
+    [Header("Contador de nivel")]
     [SerializeField] Text levelCountText;
-    
+
+    [Header("Controladores")]
     [SerializeField] NumberGenerator numberGenerator;
     [SerializeField] ScoreControl scoreControl;
     [SerializeField] TextControl textControl;
 
+    [Header("Botones")]
     [SerializeField] List<GameObject> buttonList;
 
+    [Header("Opciones incorrectas")]
     [SerializeField] int incorrectOptionsCount = 2;
 
     private int levelCount = 0;
@@ -33,6 +40,9 @@ public class LevelController : MonoBehaviour
         levelCountText.text = "Nivel: " + levelCount;
     }
 
+    /// <summary>
+    /// Genera un nuevo nivel
+    /// </summary>
     private void GenerateLevel() 
     {
         levelCount++;
@@ -41,21 +51,33 @@ public class LevelController : MonoBehaviour
 
         correctNumber = numberGenerator.GenerateRandomNumber();
 
-        for (int i = 0; i < incorrectOptionsCount; ++i)
+        //Por cada opcion incorrecta (una menos que el numero de botones) genera otro numero aleatorio distinto
+        int i = 0;
+        while (i < incorrectOptionsCount) 
         {
-            incorrectNumbers.Add(numberGenerator.GenerateRandomNumber());
+            int incorrectNumber = numberGenerator.GenerateRandomNumber();
+            
+            if (incorrectNumber != correctNumber && !incorrectNumbers.Contains(incorrectNumber)) 
+            {
+                incorrectNumbers.Add(incorrectNumber);
+                ++i;
+            }
+                
         }
 
+        //Se genera el texto del numero correcto
         string textNumber = numberGenerator.GenerateNumberText(correctNumber);
         textNumber.Trim();
 
         textControl.NumberTextString = char.ToUpper(textNumber[0]) + textNumber.Substring(1);
 
-        int correctNumberPlace = Random.Range(0, incorrectOptionsCount);
+        //Asigna un indice aleatorio dentro de la lista de botones donde se coloca la respuesta correcta, el rango es exclusivo en el maximo por eso +1
+        int correctNumberPlace = Random.Range(0, incorrectOptionsCount+1);
 
         int buttonListCount = 0;
         int incorrectNumberCount = 0;
 
+        //Para cada botón se asigna un metodo distinto al evento de pulsado dependiendo si contiene el numero correcto o no
         foreach (GameObject button in buttonList)
         {
             ButtonControl buttonControl = button.GetComponent<ButtonControl>();
@@ -88,10 +110,14 @@ public class LevelController : MonoBehaviour
         textControl.FaceInText();
     }
 
+    /// <summary>
+    /// Comportamiento de la respuesta correcta
+    /// </summary>
     private void CorrectAnswer() 
     {
-        scoreControl.SucessCount++;
+        scoreControl.IncreaseSucessCount();
 
+        //Se simula que se han pulsado el resto de botones
         foreach (GameObject button in buttonList) 
         {
             ButtonControl buttonControl = button.GetComponent<ButtonControl>();
@@ -105,13 +131,17 @@ public class LevelController : MonoBehaviour
         Invoke("GenerateLevel", 3.0f);
     }
 
+    /// <summary>
+    /// Comportamiento de la respuesta incorrecta
+    /// </summary>
     private void IncorrectAnswer() 
     {
         failsInLevel++;
-        scoreControl.FailCount++;
+        scoreControl.IncreaseFailCount();
 
         if (failsInLevel == incorrectOptionsCount) 
         {
+            //Se simula que se han pulsado el resto de botones
             foreach (GameObject button in buttonList)
             {
                 ButtonControl buttonControl = button.GetComponent<ButtonControl>();
